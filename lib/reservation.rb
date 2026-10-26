@@ -31,4 +31,14 @@ class Reservation
     def total_cost
         @room.cost
     end
+
+    def update_status(status, location, timestamp, notes = nil)
+        event = ReservationEvent.new(status, location, timestamp, notes)
+        @events << event
+        @events.sort_by!(&:timestamp)
+        
+        @notifiers.each do |notifier|
+            notifier.notify(self, event)
+        end
+    end
 end
