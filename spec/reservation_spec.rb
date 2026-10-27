@@ -9,6 +9,7 @@ RSpec.describe Reservation do
     let(:notifier) { double("Notifier", notify: nil) }
     let(:reservation) { Reservation.new("Carol", room, [notifier]) }
 
+    # Check reservation setup and confirmation numbers
     describe "#initialize" do
         it "stores the guest name" do
             expect(reservation.guest_name).to eq("Carol")
@@ -30,6 +31,7 @@ RSpec.describe Reservation do
         end
     end
 
+    # Check the reservation's current status
     describe "#current_status" do
         it "returns not_yet_confirmed when there are no events" do
             expect(reservation.current_status).to eq("not_yet_confirmed")
@@ -42,13 +44,14 @@ RSpec.describe Reservation do
         end
     end
 
+    # Check the room cost returned by the reservation
     describe "#total_cost" do
         it "returns the room's total cost" do
             expect(reservation.total_cost).to eq(275)
         end
     end
 
-    
+    # Check that reservation events are stored correctly
     describe "#history" do
         it "starts with an empty history" do
             expect(reservation.history).to be_empty
@@ -76,6 +79,7 @@ RSpec.describe Reservation do
         end
     end
 
+    # Check status updates and invalid statuses
     describe "#update_status" do
         it "creates an event with the provided details" do
             time = Time.new(2025, 6, 15, 14, 0, 0)
@@ -106,7 +110,7 @@ RSpec.describe Reservation do
         end
     end
 
-    
+    # Check that status updates notify the right objects
     describe "notifier behavior" do
         it "notifies each notifier when the status changes" do
             second_notifier = double("SecondNotifier", notify: nil)
@@ -144,6 +148,48 @@ RSpec.describe Reservation do
         expect(reservation.history.map(&:status)).to eq(
             ["confirmed", "checked_in"]
         )
+    end
+
+    
+    it "notifies them in the order they were provided" do
+        first_notifier = double("FirstNotifier")
+        second_notifier = double("SecondNotifier")
+
+        reservation = Reservation.new(
+            "Carol",
+            room,
+            [first_notifier, second_notifier]
+        )
+
+        time = Time.new(2025, 6, 15, 14, 0, 0)
+
+        expect(first_notifier).to receive(:notify).ordered
+        expect(second_notifier).to receive(:notify).ordered
+
+        reservation.update_status("confirmed", "Front Desk", time)
+    end
+
+    
+    it "generates different confirmation numbers for separate reservations" do
+        first_reservation = Reservation.new("Carol", room, [notifier])
+        second_reservation = Reservation.new("Carol", room, [notifier])
+
+        expect(first_reservation.confirmation_number).not_to eq(
+            second_reservation.confirmation_number
+        )
+    end
+
+    
+    it "does not add an event when the status is invalid" do
+        expect {
+            reservation.update_status(
+            "cancelled",
+            "Front Desk",
+            Time.new(2025, 6, 15, 14, 0, 0)
+            )
+        }.to raise_error(ArgumentError)
+
+        expect(reservation.history).to be_empty
     end
 
 end
