@@ -54,6 +54,5 @@ class EmailNotifier
         # Only include notes when the guest provided them
         puts "Notes : #{event.notes}" unless event.notes.nil? || event.notes.empty?
 
-        puts "---"
     end
 end

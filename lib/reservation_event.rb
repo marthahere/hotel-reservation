@@ -14,10 +14,10 @@ class ReservationEvent
             raise ArgumentError, "Invalid reservation status"
         end
 
-        @status = status
-        @location = location
-        @timestamp = timestamp
-        @notes = notes
+        @status = status.dup.freeze
+        @location = location.dup.freeze
+        @timestamp = timestamp.dup.freeze
+        @notes = notes&.dup&.freeze
 
         freeze
     end
