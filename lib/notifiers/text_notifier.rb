@@ -15,5 +15,7 @@ class TextNotifier
     def notify(reservation, event)
         message = MESSAGES[event.status]
         puts "[SMS to #{@phone_number}]: #{message}"
+        puts
     end
+    
 end

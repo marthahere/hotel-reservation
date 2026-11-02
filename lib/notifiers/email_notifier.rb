@@ -47,12 +47,14 @@ class EmailNotifier
         puts
         puts opening
         puts
-        puts "Status : #{event.status}"
+        puts "Status   : #{event.status}"
         puts "Location : #{event.location}"
-        puts "Time : #{formatted_time}"
+        puts "Time     : #{formatted_time}"
 
         # Only include notes when the guest provided them
-        puts "Notes : #{event.notes}" unless event.notes.nil? || event.notes.empty?
+        puts "Notes    : #{event.notes}" unless event.notes.nil? || event.notes.empty?
 
+        puts "---"
+        puts
     end
 end

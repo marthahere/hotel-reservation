@@ -15,11 +15,11 @@ class FrontDeskNotifier
         puts "FRONT DESK ALERT"
         puts "----------------------------------------"
         puts "Reservation : #{reservation.confirmation_number}"
-        puts "Status        : #{event.status}"
-        puts "Location : #{event.location}"
-        puts "Time          : #{formatted_time}"
+        puts "Status      : #{event.status}"
+        puts "Location    : #{event.location}"
+        puts "Time        : #{formatted_time}"
 
-        puts "Notes         : #{event.notes}" unless event.notes.nil? || event.notes.empty?
+        puts "Notes       : #{event.notes}" unless event.notes.nil? || event.notes.empty?
 
         puts "----------------------------------------"
         puts INSTRUCTIONS[event.status]
